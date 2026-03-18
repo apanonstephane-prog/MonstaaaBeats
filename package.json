@@ -1,0 +1,14 @@
+{
+  "name": "monstaaabeats",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Site vitrine & catalogue de beats — MONSTAAABEATS",
+  "scripts": {
+    "build": "node build.js",
+    "setup": "node setup.js",
+    "dev":   "npx serve . -p 3000"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

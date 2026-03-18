@@ -1716,10 +1716,9 @@ const CONFIG = {
   // ↓ Remplacer par votre email
   email: 'bande2loups@gmail.com',
   emailSubject: 'MONSTAAABEATS — Demande de licence',
-  // Supabase — injectées par Vercel via variables d'environnement
-  // Ou à remplacer directement ici pour les tests locaux
-  supabaseUrl: (typeof window !== 'undefined' && window.SUPABASE_URL) || '',
-  supabaseKey: (typeof window !== 'undefined' && window.SUPABASE_ANON_KEY) || '',
+  // Supabase — URL hardcodée (non secrète), clé injectée par build.js / setup.js
+  supabaseUrl: 'https://jiwngpuaawprlaxqqfwv.supabase.co',
+  supabaseKey: '',  // ← remplie automatiquement par setup.js ou build.js (Vercel)
 };
 
 /* ==========================================================
