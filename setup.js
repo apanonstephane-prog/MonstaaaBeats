@@ -194,23 +194,24 @@ async function main() {
   const htmlPath = path.join(ROOT, 'index.html');
   let html = fs.readFileSync(htmlPath, 'utf8');
 
-  const urlBefore  = `supabaseUrl: (typeof window !== 'undefined' && window.SUPABASE_URL) || ''`;
-  const urlAfter   = `supabaseUrl: '${SUPABASE_URL}'`;
-  const keyBefore  = `supabaseKey: (typeof window !== 'undefined' && window.SUPABASE_ANON_KEY) || ''`;
-  const keyAfter   = `supabaseKey: '${anonKey}'`;
-
-  if (!html.includes(urlBefore) && !html.includes(urlAfter)) {
-    warn('Pattern supabaseUrl non trouvé dans index.html — vérifiez manuellement.');
-  } else {
-    html = html.replace(urlBefore, urlAfter);
+  // Patch supabaseUrl — accepte les deux formes possibles
+  if (html.includes(`supabaseUrl: ''`)) {
+    html = html.replace(`supabaseUrl: ''`, `supabaseUrl: '${SUPABASE_URL}'`);
     ok('supabaseUrl mis à jour');
+  } else if (html.includes(`supabaseUrl: '${SUPABASE_URL}'`)) {
+    ok('supabaseUrl déjà présent');
+  } else {
+    warn('Pattern supabaseUrl non trouvé dans index.html — vérifiez manuellement.');
   }
 
-  if (!html.includes(keyBefore) && !html.includes(keyAfter)) {
-    warn('Pattern supabaseKey non trouvé dans index.html — vérifiez manuellement.');
-  } else {
-    html = html.replace(keyBefore, keyAfter);
+  // Patch supabaseKey — accepte les deux formes possibles
+  if (html.includes(`supabaseKey: ''`)) {
+    html = html.replace(`supabaseKey: ''`, `supabaseKey: '${anonKey}'`);
     ok('supabaseKey mis à jour');
+  } else if (html.includes(`supabaseKey: '${anonKey}'`)) {
+    ok('supabaseKey déjà présent');
+  } else {
+    warn('Pattern supabaseKey non trouvé dans index.html — vérifiez manuellement.');
   }
 
   fs.writeFileSync(htmlPath, html, 'utf8');
