@@ -648,32 +648,6 @@ body::after {
 .waveform-bar:nth-child(7)  { height: 50%; --dur: 0.75s; animation-delay: 0.05s; }
 .waveform-bar:nth-child(8)  { height: 35%; --dur: 0.85s; animation-delay: 0.35s; }
 
-/* Beat Cover */
-.beat-cover {
-  width: 100%;
-  aspect-ratio: 1;
-  max-height: 200px;
-  overflow: hidden;
-  position: relative;
-  background: var(--ink2);
-  flex-shrink: 0;
-}
-.beat-cover img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  transition: transform 0.4s ease;
-}
-.beat-card:hover .beat-cover img { transform: scale(1.04); }
-.beat-cover-placeholder {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  padding: 0 24px;
-}
-
 /* Status pill */
 .beat-status {
   display: inline-block;
@@ -1160,16 +1134,6 @@ body::after {
 }
 @keyframes orbit-spin { to { transform: rotate(360deg); } }
 .sticky-player.playing .player-orbital { animation-duration: 1.5s; }
-
-/* Player cover thumbnail */
-.player-cover {
-  width: 40px;
-  height: 40px;
-  border-radius: 4px;
-  object-fit: cover;
-  flex-shrink: 0;
-  display: none;
-}
 
 /* Player info */
 .player-info {
@@ -1703,8 +1667,7 @@ body::after {
      STICKY PLAYER
      ============================================================ -->
 <div class="sticky-player" id="stickyPlayer" role="region" aria-label="Lecteur audio" aria-live="polite">
-  <div class="player-orbital" id="playerOrbital" aria-hidden="true"></div>
-  <img class="player-cover" id="playerCover" src="" alt="" aria-hidden="true">
+  <div class="player-orbital" aria-hidden="true"></div>
 
   <div class="player-info">
     <div class="player-beat-name" id="playerBeatName">—</div>
@@ -1860,18 +1823,6 @@ function playBeat(index) {
   // Update player UI
   document.getElementById('playerBeatName').textContent = beat.name;
   document.getElementById('playerBeatMeta').textContent = `${beat.bpm} BPM · ${beat.genre}`;
-
-  // Cover ou orbital
-  const playerCover   = document.getElementById('playerCover');
-  const playerOrbital = document.getElementById('playerOrbital');
-  if (beat.cover_url) {
-    playerCover.src = beat.cover_url;
-    playerCover.style.display = 'block';
-    playerOrbital.style.display = 'none';
-  } else {
-    playerCover.style.display = 'none';
-    playerOrbital.style.display = '';
-  }
   document.getElementById('playerCurrentTime').textContent = '0:00';
   document.getElementById('playerTotalTime').textContent = beat.duration_label || '—';
   document.getElementById('playerProgressFill').style.width = '0%';
@@ -1991,9 +1942,6 @@ function renderBeatCard(beat, index) {
   }
 
   const waveformBars = Array.from({ length: 8 }, () => `<div class="waveform-bar"></div>`).join('');
-  const coverHTML = beat.cover_url
-    ? `<img src="${beat.cover_url}" alt="Cover ${beat.name}" loading="lazy">`
-    : `<div class="beat-cover-placeholder" aria-hidden="true"><div class="waveform">${waveformBars}</div></div>`;
 
   return `
     <article class="beat-card${beat.is_featured ? ' featured-beat' : ''}"
@@ -2003,8 +1951,8 @@ function renderBeatCard(beat, index) {
              role="listitem"
              aria-label="Beat ${beat.name}">
       ${beat.is_featured ? '<div class="beat-featured-badge">Featured</div>' : ''}
-      <div class="beat-cover">${coverHTML}</div>
       <div class="beat-card-inner">
+        <div class="waveform" aria-hidden="true">${waveformBars}</div>
         <span class="beat-status ${typeClass}">${typeLabel}</span>
         <h3 class="beat-name">${beat.name}</h3>
         <p class="beat-genre">${beat.genre}</p>
