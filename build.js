@@ -47,5 +47,16 @@ if (supabaseKey) {
 fs.mkdirSync(DIST, { recursive: true });
 fs.writeFileSync(path.join(DIST, 'index.html'), html, 'utf8');
 
+// Copier le dossier public/ vers dist/public/
+const PUBLIC_SRC = path.join(ROOT, 'public');
+if (fs.existsSync(PUBLIC_SRC)) {
+  const PUBLIC_DEST = path.join(DIST, 'public');
+  fs.mkdirSync(PUBLIC_DEST, { recursive: true });
+  for (const file of fs.readdirSync(PUBLIC_SRC)) {
+    fs.copyFileSync(path.join(PUBLIC_SRC, file), path.join(PUBLIC_DEST, file));
+    console.log(`[build] copié : public/${file}`);
+  }
+}
+
 console.log(`[build] dist/index.html généré (${(html.length / 1024).toFixed(1)} KB)`);
 if (supabaseUrl) console.log(`[build] Supabase URL : ${supabaseUrl}`);
