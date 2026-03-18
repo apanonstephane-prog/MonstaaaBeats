@@ -1604,10 +1604,7 @@ body::after {
   <div class="contact-inner">
 
     <div class="contact-left reveal">
-      <p class="section-eyebrow" style="margin-bottom:16px">
-        <span style="display:block;width:28px;height:1px;background:var(--gold);margin-right:12px;"></span>
-        Direct
-      </p>
+      <p class="section-eyebrow" style="margin-bottom:16px">Direct</p>
       <h2 class="section-title" style="font-size:clamp(22px,4vw,44px);margin-bottom:16px;">
         PARLONS<br>AFFAIRES.
       </h2>
@@ -1939,8 +1936,9 @@ function renderBeatCard(beat, index) {
 
   let actionBtn = '';
   if (beat.beat_type === 'free') {
-    const dlHref = beat.audio_url || '#';
-    actionBtn = `<a href="${dlHref}" class="btn-action btn-action-free" ${beat.audio_url ? 'download' : 'href="#contact"'} aria-label="Télécharger ${beat.name}">Télécharger</a>`;
+    const dlHref = beat.audio_url ? beat.audio_url : '#contact';
+    const dlExtra = beat.audio_url ? 'download' : '';
+    actionBtn = `<a href="${dlHref}" class="btn-action btn-action-free" ${dlExtra} aria-label="Télécharger ${beat.name}">Télécharger</a>`;
   } else if (beat.beat_type === 'sale') {
     const waLink = buildWhatsappLink(beat.name);
     actionBtn = `<a href="${waLink}" target="_blank" rel="noopener noreferrer" class="btn-action btn-action-sale" aria-label="Acheter ${beat.name}">Acheter</a>`;
