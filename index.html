@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MONSTAAABEATS — Beats Cinématiques Premium</title>
+<title>BANDE2LOUPS-BEATS — Beats Cinématiques Premium</title>
 <meta name="description" content="Sélection premium de beats trap, drill, conscient et afrobeat. Licences simples. Exclusivités disponibles.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;900&family=DM+Mono:ital,wght@0,400;0,500;1,400&family=Playfair+Display:ital@1&display=swap" rel="stylesheet">
 <style>
 /* ============================================================
-   MONSTAAABEATS — Design System
+   BANDE2LOUPS-BEATS — Design System
    Variables, reset, typographie, layout global
    ============================================================ */
 
@@ -431,6 +431,62 @@ body::after {
   .kpi-item { border-right: none; border-bottom: 1px solid var(--card-border); }
   .kpi-item:nth-child(odd) { border-right: 1px solid var(--card-border); }
   .kpi-item:last-child, .kpi-item:nth-last-child(2):nth-child(odd) { border-bottom: none; }
+}
+
+/* ============================================================
+   STUDIO SECTION
+   ============================================================ */
+.studio-section {
+  padding: 80px 24px;
+  background: var(--ink2);
+  border-top: 1px solid var(--card-border);
+  border-bottom: 1px solid var(--card-border);
+}
+.studio-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.studio-desc {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  color: rgba(245,240,232,0.6);
+  max-width: 560px;
+  margin: 0 0 48px;
+  line-height: 1.7;
+}
+.studio-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  grid-template-rows: 240px 240px;
+  gap: 12px;
+}
+.studio-img-wrap {
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--card-border);
+  position: relative;
+}
+.studio-img-wrap.studio-img--main {
+  grid-row: 1 / 3;
+}
+.studio-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.6s ease;
+  filter: brightness(0.8) saturate(0.85);
+}
+.studio-img-wrap:hover img {
+  transform: scale(1.04);
+  filter: brightness(0.9) saturate(1);
+}
+@media (max-width: 768px) {
+  .studio-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: 220px 180px 180px;
+  }
+  .studio-img-wrap.studio-img--main { grid-row: auto; }
 }
 
 /* ============================================================
@@ -1266,7 +1322,7 @@ body::after {
      NAVIGATION
      ============================================================ -->
 <nav class="nav" role="navigation" aria-label="Navigation principale">
-  <a href="#" class="nav-logo">MONSTAAA<span>BEATS</span></a>
+  <a href="#" class="nav-logo">BANDE2LOUPS<span>-BEATS</span></a>
   <div class="nav-links" id="navLinks">
     <a href="#beats"    class="nav-link">Beats</a>
     <a href="#licences" class="nav-link">Licences</a>
@@ -1304,7 +1360,7 @@ body::after {
   <div class="hero-glow" aria-hidden="true"></div>
 
   <div class="hero-content">
-    <p class="hero-eyebrow">Monstaaa L'Ovni · Producteur</p>
+    <p class="hero-eyebrow">Le label BANDE 2 LOUPS met à disposition</p>
 
     <!-- ↓ MODIFIER : texte principal du hero -->
     <h1 class="hero-title">
@@ -1348,7 +1404,7 @@ body::after {
 <!-- ============================================================
      VALUE SECTION
      ============================================================ -->
-<section class="value-section" aria-label="Pourquoi MONSTAAABEATS">
+<section class="value-section" aria-label="Pourquoi BANDE2LOUPS-BEATS">
   <div class="value-grid">
 
     <article class="value-card reveal">
@@ -1400,6 +1456,28 @@ body::after {
     <div class="kpi-item reveal"><div class="kpi-number">6</div><div class="kpi-label">Licences immédiates</div></div>
     <div class="kpi-item reveal"><div class="kpi-number">2</div><div class="kpi-label">Exclusivités</div></div>
     <div class="kpi-item reveal"><div class="kpi-number">↑</div><div class="kpi-label">Mises à jour régulières</div></div>
+  </div>
+</section>
+
+<!-- ============================================================
+     STUDIO SECTION
+     ============================================================ -->
+<section class="studio-section reveal" aria-label="Notre Studio">
+  <div class="studio-inner">
+    <p class="section-label">L'environnement</p>
+    <h2 class="section-title">UN SON FABRIQUÉ<br><span class="accent">EN STUDIO</span></h2>
+    <p class="studio-desc">Le label BANDE 2 LOUPS met à disposition des beats produits, mixés et masterisés dans un environnement professionnel. Un son compétitif, prêt pour les plateformes.</p>
+    <div class="studio-grid">
+      <div class="studio-img-wrap studio-img--main">
+        <img src="https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=900&q=80&auto=format&fit=crop" alt="Console de mixage studio professionnel" loading="lazy">
+      </div>
+      <div class="studio-img-wrap">
+        <img src="https://images.unsplash.com/photo-1520170350707-b2da59970118?w=600&q=80&auto=format&fit=crop" alt="Microphone studio professionnel" loading="lazy">
+      </div>
+      <div class="studio-img-wrap">
+        <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600&q=80&auto=format&fit=crop" alt="Booth enregistrement vocal" loading="lazy">
+      </div>
+    </div>
   </div>
 </section>
 
@@ -1475,7 +1553,7 @@ body::after {
         <ul class="licence-features">
           <li class="licence-feature">Usage non-commercial uniquement</li>
           <li class="licence-feature">Maquettes, démos, portfolios</li>
-          <li class="licence-feature">Crédit obligatoire : Prod. Monstaaa</li>
+          <li class="licence-feature">Crédit obligatoire : Prod. B2L</li>
           <li class="licence-feature">MP3 320kbps</li>
           <li class="licence-feature">Pas de distribution commerciale</li>
         </ul>
@@ -1495,7 +1573,7 @@ body::after {
           <li class="licence-feature">Streaming (Spotify, Apple, YouTube…)</li>
           <li class="licence-feature">Distribution jusqu'à 10 000 copies</li>
           <li class="licence-feature">MP3 320kbps + WAV inclus</li>
-          <li class="licence-feature">Crédit requis : Prod. Monstaaa</li>
+          <li class="licence-feature">Crédit requis : Prod. B2L</li>
           <li class="licence-feature">Non-exclusif</li>
         </ul>
         <a href="#contact" class="licence-cta">Acheter une licence</a>
@@ -1541,7 +1619,7 @@ body::after {
       </button>
       <div class="faq-answer" role="region">
         <div class="faq-answer-inner">
-          La licence gratuite est réservée à un usage non-commercial : démos personnelles, maquettes, freestyles YouTube non monétisés, portfolios. La distribution commerciale ou la monétisation nécessite une licence Standard minimum. Le crédit "Prod. Monstaaa" est obligatoire.
+          La licence gratuite est réservée à un usage non-commercial : démos personnelles, maquettes, freestyles YouTube non monétisés, portfolios. La distribution commerciale ou la monétisation nécessite une licence Standard minimum. Le crédit "Prod. B2L" est obligatoire.
         </div>
       </div>
     </div>
@@ -1617,7 +1695,7 @@ body::after {
 
     <div class="contact-right reveal">
       <!-- ↓ MODIFIER : numéro WhatsApp (sans le +) -->
-      <a id="contactWhatsapp" href="https://wa.me/33600000000?text=Bonjour%2C%20je%20suis%20int%C3%A9ress%C3%A9%20par%20MONSTAAABEATS." class="contact-btn" target="_blank" rel="noopener noreferrer">
+      <a id="contactWhatsapp" href="https://wa.me/33600000000?text=Bonjour%2C%20je%20suis%20int%C3%A9ress%C3%A9%20par%20BANDE2LOUPS-BEATS." class="contact-btn" target="_blank" rel="noopener noreferrer">
         <div class="contact-btn-icon contact-btn-icon-wa">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
             <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.488"/>
@@ -1633,7 +1711,7 @@ body::after {
       </a>
 
       <!-- ↓ MODIFIER : adresse email -->
-      <a href="mailto:bande2loups@gmail.com?subject=MONSTAAABEATS%20%E2%80%94%20Demande%20de%20licence" class="contact-btn">
+      <a href="mailto:bande2loups@gmail.com?subject=BANDE2LOUPS-BEATS%20%E2%80%94%20Demande%20de%20licence" class="contact-btn">
         <div class="contact-btn-icon contact-btn-icon-email">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
             <rect x="2" y="4" width="20" height="16" rx="2"/>
@@ -1658,14 +1736,14 @@ body::after {
      FOOTER
      ============================================================ -->
 <footer class="footer" role="contentinfo">
-  <div class="footer-logo">MONSTAAA<span>BEATS</span></div>
+  <div class="footer-logo">BANDE2LOUPS<span>-BEATS</span></div>
   <nav class="footer-links" aria-label="Liens footer">
     <a href="#beats"    class="footer-link">Beats</a>
     <a href="#licences" class="footer-link">Licences</a>
     <a href="#faq"      class="footer-link">FAQ</a>
     <a href="#contact"  class="footer-link">Contact</a>
   </nav>
-  <p class="footer-copy">© 2026 MONSTAAABEATS · Monstaaa L'Ovni · Tous droits réservés</p>
+  <p class="footer-copy">© 2026 BANDE2LOUPS-BEATS · Le label BANDE 2 LOUPS · Tous droits réservés</p>
 </footer>
 
 <!-- ============================================================
@@ -1704,7 +1782,7 @@ body::after {
 
 <script>
 /* ============================================================
-   MONSTAAABEATS — Application JS
+   BANDE2LOUPS-BEATS — Application JS
    ============================================================ */
 
 /* ==========================================================
@@ -1715,7 +1793,7 @@ const CONFIG = {
   whatsapp: '33600000000',
   // ↓ Remplacer par votre email
   email: 'bande2loups@gmail.com',
-  emailSubject: 'MONSTAAABEATS — Demande de licence',
+  emailSubject: 'BANDE2LOUPS-BEATS — Demande de licence',
   // Supabase — URL hardcodée (non secrète), clé injectée par build.js / setup.js
   supabaseUrl: 'https://jiwngpuaawprlaxqqfwv.supabase.co',
   supabaseKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imppd25ncHVhYXdwcmxheHFxZnd2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MjE4NDAsImV4cCI6MjA4OTM5Nzg0MH0.0bWnRqBmPwP93dl-WuORt7t3GrFKGeu85Bm-xRetH0I',  // ← remplie automatiquement par setup.js ou build.js (Vercel)
@@ -1732,7 +1810,7 @@ const PLACEHOLDER_BEATS = [
   { id:2,  name:'Code Morse',     genre:'Trap Conscient',  bpm:140, musical_key:'Fm', duration_label:'2:58', duration_seconds:178, beat_type:'sale', price_eur:29,  tags:['trap','conscient'],   vibe:'Cryptique',    is_featured:true,  sort_order:2,  audio_url:'' },
   { id:3,  name:'Griffith',       genre:'Drill FR',        bpm:145, musical_key:'Gm', duration_label:'3:10', duration_seconds:190, beat_type:'excl', price_eur:199, tags:['drill'],              vibe:'Épique',       is_featured:true,  sort_order:3,  audio_url:'' },
   { id:4,  name:'Morpheus',       genre:'Trap Sombre',     bpm:135, musical_key:'Dm', duration_label:'2:45', duration_seconds:165, beat_type:'sale', price_eur:29,  tags:['trap'],               vibe:'Onirique',     is_featured:false, sort_order:4,  audio_url:'' },
-  { id:5,  name:"L'Ovni Revient", genre:'Conscient',       bpm:85,  musical_key:'Cm', duration_label:'4:02', duration_seconds:242, beat_type:'free', price_eur:0,   tags:['conscient'],          vibe:'Introspectif', is_featured:true,  sort_order:5,  audio_url:'' },
+  { id:5,  name:"Nuit de Loups",  genre:'Conscient',       bpm:85,  musical_key:'Cm', duration_label:'4:02', duration_seconds:242, beat_type:'free', price_eur:0,   tags:['conscient'],          vibe:'Introspectif', is_featured:true,  sort_order:5,  audio_url:'' },
   { id:6,  name:'Requiem',        genre:'Afrobeat',        bpm:105, musical_key:'Em', duration_label:'3:33', duration_seconds:213, beat_type:'sale', price_eur:35,  tags:['afrobeat'],           vibe:'Mélancolique', is_featured:false, sort_order:6,  audio_url:'' },
   { id:7,  name:'Nuit Étoilée',   genre:'Trap Mélo',       bpm:128, musical_key:'Bm', duration_label:'3:15', duration_seconds:195, beat_type:'free', price_eur:0,   tags:['trap'],               vibe:'Hypnotique',   is_featured:false, sort_order:7,  audio_url:'' },
   { id:8,  name:'Gasy Vibes',     genre:'Afrobeat',        bpm:92,  musical_key:'Am', duration_label:'3:48', duration_seconds:228, beat_type:'sale', price_eur:29,  tags:['afrobeat'],           vibe:'Chaleureux',   is_featured:false, sort_order:8,  audio_url:'' },
@@ -1915,8 +1993,8 @@ progressEl.addEventListener('keydown', (e) => {
    ========================================================== */
 function buildWhatsappLink(beatName) {
   const msg = beatName
-    ? `Bonjour, je suis intéressé par le beat "${beatName}" sur MONSTAAABEATS.`
-    : 'Bonjour, je suis intéressé par MONSTAAABEATS.';
+    ? `Bonjour, je suis intéressé par le beat "${beatName}" sur BANDE2LOUPS-BEATS.`
+    : 'Bonjour, je suis intéressé par BANDE2LOUPS-BEATS.';
   return `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(msg)}`;
 }
 
@@ -2110,7 +2188,7 @@ async function fetchBeatsFromSupabase() {
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     return await res.json();
   } catch (err) {
-    console.warn('[MONSTAAABEATS] Supabase fetch failed, using placeholder data.', err);
+    console.warn('[BANDE2LOUPS-BEATS] Supabase fetch failed, using placeholder data.', err);
     return null;
   }
 }
