@@ -20,6 +20,7 @@ CREATE TABLE IF NOT EXISTS public.beats (
   tags            TEXT[] NOT NULL DEFAULT '{}',
   vibe            TEXT,
   audio_url       TEXT NOT NULL DEFAULT '',
+  cover_url       TEXT NOT NULL DEFAULT '',
   is_featured     BOOLEAN NOT NULL DEFAULT FALSE,
   sort_order      INTEGER NOT NULL DEFAULT 0,
   created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -54,6 +55,9 @@ BEGIN
       USING (TRUE);
   END IF;
 END $$;
+
+-- Migration : ajout cover_url si colonne absente (idempotent)
+ALTER TABLE public.beats ADD COLUMN IF NOT EXISTS cover_url TEXT NOT NULL DEFAULT '';
 
 -- ============================================================
 -- STORAGE BUCKET: beats-audio (créé via API dans setup.js)
