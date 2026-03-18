@@ -6,9 +6,12 @@
   "scripts": {
     "build": "node build.js",
     "setup": "node setup.js",
-    "dev":   "npx serve . -p 3000"
+    "dev": "npx serve . -p 3000"
   },
   "engines": {
     "node": ">=18"
+  },
+  "devDependencies": {
+    "pg": "^8.20.0"
   }
 }
