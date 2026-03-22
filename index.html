@@ -1414,10 +1414,8 @@ body::after {
         aria-label="Rechercher un beat"
       >
       <select class="sort-select" id="beatsSort" aria-label="Trier par">
-        <option value="sort_order">Par défaut</option>
+        <option value="default">Par défaut</option>
         <option value="name">Nom A–Z</option>
-        <option value="bpm_asc">BPM croissant</option>
-        <option value="bpm_desc">BPM décroissant</option>
         <option value="price_asc">Prix croissant</option>
       </select>
     </div>
@@ -1720,21 +1718,19 @@ const CONFIG = {
    DONNÉES PLACEHOLDER (fallback si Supabase non configuré)
    ========================================================== */
 const PLACEHOLDER_BEATS = [
-  // ↓ MODIFIER : beats du catalogue. Pour chaque beat :
-  // name, genre, bpm, musical_key, duration_label, beat_type (free/sale/excl),
-  // price_eur, tags (tableau), vibe, is_featured, sort_order, audio_url
-  { id:1,  name:'Afrique 3000',   genre:'Afrobeat',        bpm:98,  musical_key:'Am', duration_label:'3:24', duration_seconds:204, beat_type:'free', price_eur:0,   tags:['afrobeat'],           vibe:'Solaire',      is_featured:false, sort_order:1,  audio_url:'', cover_url:'' },
-  { id:2,  name:'Code Morse',     genre:'Trap Conscient',  bpm:140, musical_key:'Fm', duration_label:'2:58', duration_seconds:178, beat_type:'sale', price_eur:29,  tags:['trap','conscient'],   vibe:'Cryptique',    is_featured:true,  sort_order:2,  audio_url:'', cover_url:'' },
-  { id:3,  name:'Griffith',       genre:'Drill FR',        bpm:145, musical_key:'Gm', duration_label:'3:10', duration_seconds:190, beat_type:'excl', price_eur:199, tags:['drill'],              vibe:'Épique',       is_featured:true,  sort_order:3,  audio_url:'', cover_url:'' },
-  { id:4,  name:'Morpheus',       genre:'Trap Sombre',     bpm:135, musical_key:'Dm', duration_label:'2:45', duration_seconds:165, beat_type:'sale', price_eur:29,  tags:['trap'],               vibe:'Onirique',     is_featured:false, sort_order:4,  audio_url:'', cover_url:'' },
-  { id:5,  name:"Nuit de Loups",  genre:'Conscient',       bpm:85,  musical_key:'Cm', duration_label:'4:02', duration_seconds:242, beat_type:'free', price_eur:0,   tags:['conscient'],          vibe:'Introspectif', is_featured:true,  sort_order:5,  audio_url:'', cover_url:'' },
-  { id:6,  name:'Requiem',        genre:'Afrobeat',        bpm:105, musical_key:'Em', duration_label:'3:33', duration_seconds:213, beat_type:'sale', price_eur:35,  tags:['afrobeat'],           vibe:'Mélancolique', is_featured:false, sort_order:6,  audio_url:'', cover_url:'' },
-  { id:7,  name:'Nuit Étoilée',   genre:'Trap Mélo',       bpm:128, musical_key:'Bm', duration_label:'3:15', duration_seconds:195, beat_type:'free', price_eur:0,   tags:['trap'],               vibe:'Hypnotique',   is_featured:false, sort_order:7,  audio_url:'', cover_url:'' },
-  { id:8,  name:'Gasy Vibes',     genre:'Afrobeat',        bpm:92,  musical_key:'Am', duration_label:'3:48', duration_seconds:228, beat_type:'sale', price_eur:29,  tags:['afrobeat'],           vibe:'Chaleureux',   is_featured:false, sort_order:8,  audio_url:'', cover_url:'' },
-  { id:9,  name:'Quête du Graal', genre:'Conscient',       bpm:90,  musical_key:'Dm', duration_label:'4:20', duration_seconds:260, beat_type:'excl', price_eur:249, tags:['conscient'],          vibe:'Mystique',     is_featured:true,  sort_order:9,  audio_url:'', cover_url:'' },
-  { id:10, name:'Sekel Block',    genre:'Drill FR',        bpm:150, musical_key:'Gm', duration_label:'2:30', duration_seconds:150, beat_type:'sale', price_eur:29,  tags:['drill'],              vibe:'Agressif',     is_featured:false, sort_order:10, audio_url:'', cover_url:'' },
-  { id:11, name:'Plus Loin',      genre:'Trap Conscient',  bpm:130, musical_key:'Fm', duration_label:'3:05', duration_seconds:185, beat_type:'free', price_eur:0,   tags:['trap','conscient'],   vibe:'Élévation',    is_featured:false, sort_order:11, audio_url:'', cover_url:'' },
-  { id:12, name:'Cancer Remix',   genre:'Afrobeat Sombre', bpm:72,  musical_key:'Cm', duration_label:'3:55', duration_seconds:235, beat_type:'sale', price_eur:39,  tags:['afrobeat'],           vibe:'Profond',      is_featured:false, sort_order:12, audio_url:'', cover_url:'' },
+  // ↓ MODIFIER : beats du catalogue. Champs : name, genre, beat_type (free/sale/excl), price_eur, is_featured, audio_url
+  { id:1,  name:'Afrique 3000',   genre:'Afrobeat',        beat_type:'free', price_eur:0,   is_featured:false, audio_url:'', cover_url:'' },
+  { id:2,  name:'Code Morse',     genre:'Trap Conscient',  beat_type:'sale', price_eur:29,  is_featured:true,  audio_url:'', cover_url:'' },
+  { id:3,  name:'Griffith',       genre:'Drill FR',        beat_type:'excl', price_eur:199, is_featured:true,  audio_url:'', cover_url:'' },
+  { id:4,  name:'Morpheus',       genre:'Trap Sombre',     beat_type:'sale', price_eur:29,  is_featured:false, audio_url:'', cover_url:'' },
+  { id:5,  name:"Nuit de Loups",  genre:'Conscient',       beat_type:'free', price_eur:0,   is_featured:true,  audio_url:'', cover_url:'' },
+  { id:6,  name:'Requiem',        genre:'Afrobeat',        beat_type:'sale', price_eur:35,  is_featured:false, audio_url:'', cover_url:'' },
+  { id:7,  name:'Nuit Étoilée',   genre:'Trap Mélo',       beat_type:'free', price_eur:0,   is_featured:false, audio_url:'', cover_url:'' },
+  { id:8,  name:'Gasy Vibes',     genre:'Afrobeat',        beat_type:'sale', price_eur:29,  is_featured:false, audio_url:'', cover_url:'' },
+  { id:9,  name:'Quête du Graal', genre:'Conscient',       beat_type:'excl', price_eur:249, is_featured:true,  audio_url:'', cover_url:'' },
+  { id:10, name:'Sekel Block',    genre:'Drill FR',        beat_type:'sale', price_eur:29,  is_featured:false, audio_url:'', cover_url:'' },
+  { id:11, name:'Plus Loin',      genre:'Trap Conscient',  beat_type:'free', price_eur:0,   is_featured:false, audio_url:'', cover_url:'' },
+  { id:12, name:'Cancer Remix',   genre:'Afrobeat Sombre', beat_type:'sale', price_eur:39,  is_featured:false, audio_url:'', cover_url:'' },
 ];
 
 /* ==========================================================
@@ -1745,7 +1741,7 @@ let filteredBeats = [];
 let activeTypeFilter = 'all';
 let activeGenreFilter = null;
 let searchQuery = '';
-let sortBy = 'sort_order';
+let sortBy = 'default';
 let currentBeatIndex = -1;
 let isPlaying = false;
 
@@ -1822,7 +1818,7 @@ function playBeat(index) {
 
   // Update player UI
   document.getElementById('playerBeatName').textContent = beat.name;
-  document.getElementById('playerBeatMeta').textContent = `${beat.bpm} BPM · ${beat.genre}`;
+  document.getElementById('playerBeatMeta').textContent = beat.genre;
   document.getElementById('playerCurrentTime').textContent = '0:00';
   document.getElementById('playerTotalTime').textContent = beat.duration_label || '—';
   document.getElementById('playerProgressFill').style.width = '0%';
@@ -1956,12 +1952,6 @@ function renderBeatCard(beat, index) {
         <span class="beat-status ${typeClass}">${typeLabel}</span>
         <h3 class="beat-name">${beat.name}</h3>
         <p class="beat-genre">${beat.genre}</p>
-        ${beat.vibe ? `<p class="beat-vibe">${beat.vibe}</p>` : ''}
-        <div class="beat-meta">
-          <span class="beat-meta-item"><strong>${beat.bpm}</strong> BPM</span>
-          <span class="beat-meta-item"><strong>${beat.musical_key}</strong></span>
-          <span class="beat-meta-item">${beat.duration_label}</span>
-        </div>
       </div>
       <div class="beat-card-footer">
         ${priceHTML}
@@ -1989,7 +1979,7 @@ function applyFilters() {
 
   // Genre filter
   if (activeGenreFilter) {
-    result = result.filter(b => Array.isArray(b.tags) && b.tags.includes(activeGenreFilter));
+    result = result.filter(b => b.genre.toLowerCase().includes(activeGenreFilter));
   }
 
   // Search
@@ -1997,8 +1987,7 @@ function applyFilters() {
     const q = searchQuery.toLowerCase();
     result = result.filter(b =>
       b.name.toLowerCase().includes(q) ||
-      b.genre.toLowerCase().includes(q) ||
-      (b.vibe && b.vibe.toLowerCase().includes(q))
+      b.genre.toLowerCase().includes(q)
     );
   }
 
@@ -2006,10 +1995,8 @@ function applyFilters() {
   result.sort((a, b) => {
     switch (sortBy) {
       case 'name':       return a.name.localeCompare(b.name);
-      case 'bpm_asc':    return a.bpm - b.bpm;
-      case 'bpm_desc':   return b.bpm - a.bpm;
       case 'price_asc':  return a.price_eur - b.price_eur;
-      default:           return (a.sort_order || 0) - (b.sort_order || 0);
+      default:           return a.id - b.id;
     }
   });
 
@@ -2094,7 +2081,7 @@ async function fetchBeatsFromSupabase() {
   if (!supabaseUrl || !supabaseKey) return null;
 
   try {
-    const url = `${supabaseUrl}/rest/v1/beats?select=*&order=sort_order.asc,created_at.desc`;
+    const url = `${supabaseUrl}/rest/v1/beats?select=*&order=id.asc`;
     const res = await fetch(url, {
       headers: {
         'apikey': supabaseKey,

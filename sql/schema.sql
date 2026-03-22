@@ -7,22 +7,15 @@
 -- ============================================================
 CREATE TABLE IF NOT EXISTS public.beats (
   id              SERIAL PRIMARY KEY,
-  name            TEXT NOT NULL UNIQUE,          -- unique pour ON CONFLICT idempotent
+  name            TEXT NOT NULL UNIQUE,
   genre           TEXT NOT NULL,
-  bpm             INTEGER NOT NULL CHECK (bpm > 0 AND bpm < 400),
-  musical_key     TEXT NOT NULL,
-  duration_seconds INTEGER NOT NULL CHECK (duration_seconds > 0),
-  duration_label  TEXT NOT NULL,
   beat_type       TEXT NOT NULL DEFAULT 'sale'
                     CHECK (beat_type IN ('free', 'sale', 'excl')),
   price_eur       NUMERIC(8,2) NOT NULL DEFAULT 0
                     CHECK (price_eur >= 0),
-  tags            TEXT[] NOT NULL DEFAULT '{}',
-  vibe            TEXT,
   audio_url       TEXT NOT NULL DEFAULT '',
   cover_url       TEXT NOT NULL DEFAULT '',
   is_featured     BOOLEAN NOT NULL DEFAULT FALSE,
-  sort_order      INTEGER NOT NULL DEFAULT 0,
   created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 
   CONSTRAINT free_beats_no_price  CHECK (beat_type != 'free' OR price_eur = 0),
@@ -32,8 +25,18 @@ CREATE TABLE IF NOT EXISTS public.beats (
 -- Indexes
 CREATE INDEX IF NOT EXISTS idx_beats_type     ON public.beats (beat_type);
 CREATE INDEX IF NOT EXISTS idx_beats_featured ON public.beats (is_featured) WHERE is_featured = TRUE;
-CREATE INDEX IF NOT EXISTS idx_beats_sort     ON public.beats (sort_order ASC, created_at DESC);
-CREATE INDEX IF NOT EXISTS idx_beats_tags     ON public.beats USING GIN (tags);
+
+-- ============================================================
+-- MIGRATIONS (idempotent — pour bases existantes)
+-- ============================================================
+ALTER TABLE public.beats ADD COLUMN IF NOT EXISTS cover_url TEXT NOT NULL DEFAULT '';
+ALTER TABLE public.beats DROP COLUMN IF EXISTS bpm;
+ALTER TABLE public.beats DROP COLUMN IF EXISTS musical_key;
+ALTER TABLE public.beats DROP COLUMN IF EXISTS duration_seconds;
+ALTER TABLE public.beats DROP COLUMN IF EXISTS duration_label;
+ALTER TABLE public.beats DROP COLUMN IF EXISTS vibe;
+ALTER TABLE public.beats DROP COLUMN IF EXISTS tags;
+ALTER TABLE public.beats DROP COLUMN IF EXISTS sort_order;
 
 -- ============================================================
 -- ROW LEVEL SECURITY
@@ -55,9 +58,6 @@ BEGIN
       USING (TRUE);
   END IF;
 END $$;
-
--- Migration : ajout cover_url si colonne absente (idempotent)
-ALTER TABLE public.beats ADD COLUMN IF NOT EXISTS cover_url TEXT NOT NULL DEFAULT '';
 
 -- ============================================================
 -- STORAGE BUCKET: beats-audio (créé via API dans setup.js)
