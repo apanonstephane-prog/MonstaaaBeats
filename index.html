@@ -1325,8 +1325,8 @@ body::after {
     </div>
 
     <div class="hero-trust" aria-label="Informations clés">
-      <span class="hero-trust-item">12 beats disponibles</span>
-      <span class="hero-trust-item">4 gratuits</span>
+      <span class="hero-trust-item"><span id="heroTotal">—</span> beats disponibles</span>
+      <span class="hero-trust-item"><span id="heroFree">—</span> gratuits</span>
       <span class="hero-trust-item">Réponse sous 24h</span>
       <span class="hero-trust-item">Exclusivités disponibles</span>
     </div>
@@ -1387,10 +1387,10 @@ body::after {
      ============================================================ -->
 <section class="kpi-section" aria-label="Chiffres clés">
   <div class="kpi-grid">
-    <div class="kpi-item reveal"><div class="kpi-number">12</div><div class="kpi-label">Beats disponibles</div></div>
-    <div class="kpi-item reveal"><div class="kpi-number">4</div><div class="kpi-label">Gratuits</div></div>
-    <div class="kpi-item reveal"><div class="kpi-number">6</div><div class="kpi-label">Licences immédiates</div></div>
-    <div class="kpi-item reveal"><div class="kpi-number">2</div><div class="kpi-label">Exclusivités</div></div>
+    <div class="kpi-item reveal"><div class="kpi-number" id="kpiTotal">—</div><div class="kpi-label">Beats disponibles</div></div>
+    <div class="kpi-item reveal"><div class="kpi-number" id="kpiFree">—</div><div class="kpi-label">Gratuits</div></div>
+    <div class="kpi-item reveal"><div class="kpi-number" id="kpiSale">—</div><div class="kpi-label">Licences immédiates</div></div>
+    <div class="kpi-item reveal"><div class="kpi-number" id="kpiExcl">—</div><div class="kpi-label">Exclusivités</div></div>
     <div class="kpi-item reveal"><div class="kpi-number">↑</div><div class="kpi-label">Mises à jour régulières</div></div>
   </div>
 </section>
@@ -1429,10 +1429,9 @@ body::after {
       <button class="filter-btn" data-genre="trap">Trap</button>
       <button class="filter-btn" data-genre="conscient">Conscient</button>
       <button class="filter-btn" data-genre="drill">Drill</button>
-      <button class="filter-btn" data-genre="afrobeat">Afrobeat</button>
+      <button class="filter-btn" data-genre="afro">Afro</button>
       <button class="filter-btn" data-genre="reggae">Reggae</button>
       <button class="filter-btn" data-genre="dancehall">Dancehall</button>
-      <button class="filter-btn" data-genre="afrotrap">Afro Trap</button>
     </div>
   </div>
 
@@ -2105,6 +2104,18 @@ async function init() {
 
   const remoteBeats = await fetchBeatsFromSupabase();
   allBeats = remoteBeats && remoteBeats.length > 0 ? remoteBeats : PLACEHOLDER_BEATS;
+
+  // Update KPI stats
+  const total = allBeats.length;
+  const free  = allBeats.filter(b => b.beat_type === 'free').length;
+  const sale  = allBeats.filter(b => b.beat_type === 'sale').length;
+  const excl  = allBeats.filter(b => b.beat_type === 'excl').length;
+  document.getElementById('kpiTotal').textContent = total;
+  document.getElementById('kpiFree').textContent  = free;
+  document.getElementById('kpiSale').textContent  = sale;
+  document.getElementById('kpiExcl').textContent  = excl;
+  document.getElementById('heroTotal').textContent = total;
+  document.getElementById('heroFree').textContent  = free;
 
   // Clear loading state and render
   document.getElementById('beatsLoading').remove();
