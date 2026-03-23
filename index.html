@@ -1117,6 +1117,53 @@ body::after {
   color: rgba(245,240,232,0.2);
   width: 100%;
 }
+.footer-visits {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: rgba(245,240,232,0.25);
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.footer-visits svg { width: 12px; height: 12px; opacity: 0.5; fill: currentColor; }
+
+/* Beat stats bar (écoutes + like) */
+.beat-stats {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2px 20px 4px 26px;
+}
+.beat-play-count {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: rgba(245,240,232,0.35);
+}
+.beat-play-count svg { width: 10px; height: 10px; fill: currentColor; }
+.btn-like {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: rgba(245,240,232,0.35);
+  padding: 3px 7px;
+  border-radius: 20px;
+  transition: color .2s, background .2s, transform .15s;
+  line-height: 1;
+}
+.btn-like svg { width: 13px; height: 13px; fill: currentColor; transition: transform .2s; }
+.btn-like:hover { color: #f472b6; background: rgba(244,114,182,0.12); }
+.btn-like.liked { color: #f472b6; }
+.btn-like.liked svg { transform: scale(1.25); }
+.btn-like:active { transform: scale(0.92); }
 
 /* ============================================================
    STICKY PLAYER
@@ -1684,6 +1731,10 @@ body::after {
     <a href="#contact"  class="footer-link">Contact</a>
   </nav>
   <p class="footer-copy">© 2026 BANDE2LOUPS-BEATS · Le label BANDE 2 LOUPS · Tous droits réservés</p>
+  <p class="footer-visits">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+    <span id="visitCount">—</span> visites
+  </p>
 </footer>
 
 <!-- ============================================================
@@ -1840,6 +1891,7 @@ function playBeat(index) {
   if (index < 0 || index >= filteredBeats.length) return;
   const beat = filteredBeats[index];
   currentBeatIndex = index;
+  incrementPlayCount(beat.id); // compteur d'écoutes
 
   // Update player UI
   document.getElementById('playerBeatName').textContent = beat.name;
@@ -2100,6 +2152,10 @@ function renderBeatCard(beat, index) {
   const coverSrc = beat.cover_url || window.generateBeatCoverURL(beat.name, beat.genre);
   const coverHTML = `<div class="beat-cover"><img src="${coverSrc}" alt="Cover ${beat.name}" loading="lazy"/></div>`;
 
+  const playCount  = beat.play_count  || 0;
+  const likeCount  = beat.like_count  || 0;
+  const isLiked    = getLikedBeats().has(String(beat.id));
+
   return `
     <article class="beat-card${beat.is_featured ? ' featured-beat' : ''}"
              data-type="${beat.beat_type}"
@@ -2114,6 +2170,16 @@ function renderBeatCard(beat, index) {
         <span class="beat-status ${typeClass}">${typeLabel}</span>
         <h3 class="beat-name">${beat.name}</h3>
         <p class="beat-genre">${beat.genre}</p>
+      </div>
+      <div class="beat-stats">
+        <span class="beat-play-count" id="plays-${beat.id}" data-count="${playCount}">
+          <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+          <span class="count-num">${formatCount(playCount)}</span>
+        </span>
+        <button class="btn-like${isLiked ? ' liked' : ''}" data-id="${beat.id}" data-count="${likeCount}" aria-label="Liker ${beat.name}" aria-pressed="${isLiked}">
+          <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+          <span class="like-count" id="likes-${beat.id}">${formatCount(likeCount)}</span>
+        </button>
       </div>
       <div class="beat-card-footer">
         ${priceHTML}
@@ -2186,6 +2252,14 @@ function renderGrid() {
     });
   });
 
+  // Like button click handlers
+  grid.querySelectorAll('.btn-like').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleLike(parseInt(btn.dataset.id));
+    });
+  });
+
   // Sync currently playing card
   if (currentBeatIndex >= 0 && isPlaying) {
     const playingCard = grid.querySelector(`[data-index="${currentBeatIndex}"]`);
@@ -2238,6 +2312,88 @@ document.getElementById('beatsSort').addEventListener('change', (e) => {
 /* ==========================================================
    SUPABASE FETCH
    ========================================================== */
+/* ==========================================================
+   STATS — écoutes, likes, visites
+   ========================================================== */
+function formatCount(n) {
+  if (n >= 1000000) return (n / 1000000).toFixed(1).replace('.0', '') + 'M';
+  if (n >= 1000)    return (n / 1000).toFixed(1).replace('.0', '') + 'k';
+  return String(n);
+}
+
+function getLikedBeats() {
+  try { return new Set(JSON.parse(localStorage.getItem('b2l_liked') || '[]')); }
+  catch { return new Set(); }
+}
+function saveLikedBeats(set) {
+  localStorage.setItem('b2l_liked', JSON.stringify([...set]));
+}
+
+async function supabaseRpc(fn, params = {}) {
+  const { supabaseUrl, supabaseKey } = CONFIG;
+  if (!supabaseUrl || !supabaseKey) return null;
+  try {
+    const res = await fetch(`${supabaseUrl}/rest/v1/rpc/${fn}`, {
+      method: 'POST',
+      headers: {
+        'apikey': supabaseKey,
+        'Authorization': `Bearer ${supabaseKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(params),
+    });
+    if (!res.ok) return null;
+    const text = await res.text();
+    return text ? JSON.parse(text) : null;
+  } catch { return null; }
+}
+
+async function incrementPlayCount(beatId) {
+  const el = document.getElementById(`plays-${beatId}`);
+  if (el) {
+    const n = (parseInt(el.dataset.count, 10) || 0) + 1;
+    el.dataset.count = n;
+    el.querySelector('.count-num').textContent = formatCount(n);
+  }
+  supabaseRpc('increment_play_count', { beat_id: beatId }); // fire-and-forget
+}
+
+async function toggleLike(beatId) {
+  const liked  = getLikedBeats();
+  const id     = String(beatId);
+  const btn    = document.querySelector(`.btn-like[data-id="${beatId}"]`);
+  const countEl = document.getElementById(`likes-${beatId}`);
+  if (!btn || !countEl) return;
+
+  const current = parseInt(btn.dataset.count, 10) || 0;
+  if (liked.has(id)) {
+    liked.delete(id);
+    btn.classList.remove('liked');
+    btn.setAttribute('aria-pressed', 'false');
+    const next = Math.max(0, current - 1);
+    btn.dataset.count = next;
+    countEl.textContent = formatCount(next);
+    supabaseRpc('decrement_like_count', { beat_id: beatId });
+  } else {
+    liked.add(id);
+    btn.classList.add('liked');
+    btn.setAttribute('aria-pressed', 'true');
+    const next = current + 1;
+    btn.dataset.count = next;
+    countEl.textContent = formatCount(next);
+    supabaseRpc('increment_like_count', { beat_id: beatId });
+  }
+  saveLikedBeats(liked);
+}
+
+async function trackSiteVisit() {
+  if (sessionStorage.getItem('b2l_visit')) return; // 1 fois par session
+  sessionStorage.setItem('b2l_visit', '1');
+  const count = await supabaseRpc('increment_site_visits');
+  const el = document.getElementById('visitCount');
+  if (el && count !== null) el.textContent = formatCount(Number(count));
+}
+
 async function fetchBeatsFromSupabase() {
   const { supabaseUrl, supabaseKey } = CONFIG;
   if (!supabaseUrl || !supabaseKey) return null;
@@ -2286,6 +2442,9 @@ async function init() {
 
   // Setup contact WhatsApp default link
   document.getElementById('contactWhatsapp').href = buildWhatsappLink(null);
+
+  // Compteur de visites (1 fois par session)
+  trackSiteVisit();
 }
 
 /* ==========================================================
