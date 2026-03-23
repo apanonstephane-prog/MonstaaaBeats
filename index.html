@@ -1936,6 +1936,111 @@ function buildWhatsappLink(beatName) {
 }
 
 /* ==========================================================
+   COVER GENERATOR — génère un SVG unique par beat
+   Aucune dépendance externe. Fonctionne pour tous les beats.
+   ========================================================== */
+(function() {
+  const PALETTES = [
+    ['#0d0d1a','#7c3aed','#a78bfa'],
+    ['#0a0f1e','#0ea5e9','#38bdf8'],
+    ['#0d1a10','#16a34a','#4ade80'],
+    ['#1a0d0a','#dc2626','#f87171'],
+    ['#1a150a','#d97706','#fbbf24'],
+    ['#1a0d17','#db2777','#f472b6'],
+    ['#0d1a1a','#0d9488','#2dd4bf'],
+    ['#150d1a','#9333ea','#c084fc'],
+    ['#1a1209','#ea580c','#fb923c'],
+    ['#0a1020','#3b82f6','#93c5fd'],
+  ];
+
+  function hashStr(str) {
+    let h = 0;
+    for (let i = 0; i < str.length; i++) h = (Math.imul(31, h) + str.charCodeAt(i)) >>> 0;
+    return h;
+  }
+
+  function shiftColor(hex, amount) {
+    const n = parseInt(hex.slice(1), 16);
+    const r = Math.min(255, ((n >> 16) & 0xff) + amount);
+    const g = Math.min(255, ((n >> 8)  & 0xff) + amount);
+    const b = Math.min(255, (n         & 0xff) + amount);
+    return '#' + [r, g, b].map(v => v.toString(16).padStart(2, '0')).join('');
+  }
+
+  function wrapText(text, max) {
+    const words = text.split(' ');
+    const lines = [];
+    let cur = '';
+    for (const w of words) {
+      if ((cur + ' ' + w).trim().length > max && cur) { lines.push(cur.trim()); cur = w; }
+      else cur = (cur + ' ' + w).trim();
+    }
+    if (cur) lines.push(cur.trim());
+    return lines;
+  }
+
+  function esc(s) {
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  window.generateBeatCoverURL = function(name, genre) {
+    const hash = hashStr(name);
+    const [bg, accent, accentLight] = PALETTES[hash % PALETTES.length];
+    const SIZE = 500;
+
+    // Cercles décoratifs
+    const c1x = 350 + (hash % 100), c1y = 80  + (hash % 60);
+    const c2x = 60  + (hash % 80),  c2y = 380 + (hash % 70);
+
+    // Waveform décoratif (barres de hauteur déterministe)
+    const bars = Array.from({ length: 22 }, (_, i) => {
+      const h = Math.max(6, Math.round(Math.abs(Math.sin((hash + i * 7) * 0.4) * 55 + Math.sin((hash + i * 3) * 0.7) * 28)));
+      const bw = 9, gap = 3;
+      const totalW = 22 * (bw + gap) - gap;
+      const x = (SIZE - totalW) / 2 + i * (bw + gap);
+      return `<rect x="${x}" y="${330 - h}" width="${bw}" height="${h}" rx="2" fill="${accent}" opacity="0.75"/>`;
+    }).join('');
+
+    // Nom sur plusieurs lignes si nécessaire
+    const lines = wrapText(name.toUpperCase(), 14);
+    const fs = lines.length > 1 ? 40 : 50;
+    const lh = fs * 1.2;
+    const ty = 200 - (lines.length * lh) / 2 + fs * 0.35;
+    const nameEls = lines.map((l, i) =>
+      `<text x="250" y="${ty + i * lh}" text-anchor="middle" font-family="Arial Black,Impact,sans-serif" font-size="${fs}" font-weight="900" letter-spacing="2" fill="white">${esc(l)}</text>`
+    ).join('');
+
+    const sepY = ty + lines.length * lh + 14;
+
+    const svg = `<svg width="${SIZE}" height="${SIZE}" viewBox="0 0 ${SIZE} ${SIZE}" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<linearGradient id="bg${hash}" x1="0" y1="0" x2="1" y2="1">
+<stop offset="0%" stop-color="${bg}"/>
+<stop offset="100%" stop-color="${shiftColor(bg,18)}"/>
+</linearGradient>
+<linearGradient id="ln${hash}" x1="0" y1="0" x2="1" y2="0">
+<stop offset="0%" stop-color="${accent}" stop-opacity="0"/>
+<stop offset="50%" stop-color="${accent}" stop-opacity="1"/>
+<stop offset="100%" stop-color="${accent}" stop-opacity="0"/>
+</linearGradient>
+</defs>
+<rect width="${SIZE}" height="${SIZE}" fill="url(#bg${hash})"/>
+<circle cx="${c1x}" cy="${c1y}" r="160" fill="${accent}" opacity="0.07"/>
+<circle cx="${c2x}" cy="${c2y}" r="100" fill="${accentLight}" opacity="0.05"/>
+<rect x="0" y="0" width="${SIZE}" height="3" fill="${accent}" opacity="0.85"/>
+${nameEls}
+<rect x="140" y="${sepY}" width="220" height="1" fill="url(#ln${hash})" opacity="0.6"/>
+<text x="250" y="${sepY + 26}" text-anchor="middle" font-family="Arial,sans-serif" font-size="13" letter-spacing="4" fill="${accentLight}" opacity="0.9">${esc(genre.toUpperCase())}</text>
+${bars}
+<rect x="0" y="${SIZE - 3}" width="${SIZE}" height="3" fill="${accent}" opacity="0.4"/>
+<text x="250" y="${SIZE - 14}" text-anchor="middle" font-family="Arial,sans-serif" font-size="10" letter-spacing="6" fill="white" opacity="0.25">MONSTAAABEATS</text>
+</svg>`;
+
+    return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+  };
+})();
+
+/* ==========================================================
    BEAT CARD RENDERER
    ========================================================== */
 function renderBeatCard(beat, index) {
@@ -1962,9 +2067,8 @@ function renderBeatCard(beat, index) {
   }
 
   const waveformBars = Array.from({ length: 8 }, () => `<div class="waveform-bar"></div>`).join('');
-  const coverHTML = beat.cover_url
-    ? `<div class="beat-cover"><img src="${beat.cover_url}" alt="Cover ${beat.name}" loading="lazy"/></div>`
-    : '';
+  const coverSrc = beat.cover_url || window.generateBeatCoverURL(beat.name, beat.genre);
+  const coverHTML = `<div class="beat-cover"><img src="${coverSrc}" alt="Cover ${beat.name}" loading="lazy"/></div>`;
 
   return `
     <article class="beat-card${beat.is_featured ? ' featured-beat' : ''}"
