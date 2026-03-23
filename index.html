@@ -1967,16 +1967,39 @@ function buildWhatsappLink(beatName) {
     return '#' + [r, g, b].map(v => v.toString(16).padStart(2, '0')).join('');
   }
 
-  function wrapText(text, max) {
+  // Largeur dispo = 440px. Impact ≈ 0.58 * fontSize par char en moyenne.
+  // Hauteur max pour le titre = 230px (zone centrale au-dessus de la waveform).
+  // Retourne { lines, fontSize } garanti sans débordement.
+  function fitTitle(text) {
+    const AVAIL_W  = 440;  // px de large
+    const AVAIL_H  = 230;  // px de haut max pour le bloc titre
+    const CHAR_R   = 0.58; // ratio largeur-char / fontSize (Impact)
+    const LINE_H_R = 1.25; // line-height = fontSize * LINE_H_R
     const words = text.split(' ');
-    const lines = [];
-    let cur = '';
-    for (const w of words) {
-      if ((cur + ' ' + w).trim().length > max && cur) { lines.push(cur.trim()); cur = w; }
-      else cur = (cur + ' ' + w).trim();
+
+    function tryFit(fs) {
+      const maxChars = Math.floor(AVAIL_W / (fs * CHAR_R));
+      const lines = [];
+      let cur = '';
+      for (const w of words) {
+        if (w.length > maxChars) return null; // mot seul trop large
+        if ((cur + ' ' + w).trim().length > maxChars && cur) {
+          lines.push(cur.trim()); cur = w;
+        } else {
+          cur = (cur + ' ' + w).trim();
+        }
+      }
+      if (cur) lines.push(cur.trim());
+      // Vérifie aussi que la hauteur totale rentre
+      if (lines.length * fs * LINE_H_R > AVAIL_H) return null;
+      return lines;
     }
-    if (cur) lines.push(cur.trim());
-    return lines;
+
+    for (const fs of [56, 48, 40, 34, 28, 22, 18]) {
+      const lines = tryFit(fs);
+      if (lines) return { lines, fontSize: fs };
+    }
+    return { lines: [text], fontSize: 18 };
   }
 
   function esc(s) {
@@ -2001,13 +2024,13 @@ function buildWhatsappLink(beatName) {
       return `<rect x="${x}" y="${330 - h}" width="${bw}" height="${h}" rx="2" fill="${accent}" opacity="0.75"/>`;
     }).join('');
 
-    // Nom sur plusieurs lignes si nécessaire
-    const lines = wrapText(name.toUpperCase(), 14);
-    const fs = lines.length > 1 ? 40 : 50;
-    const lh = fs * 1.2;
-    const ty = 200 - (lines.length * lh) / 2 + fs * 0.35;
+    // Nom — taille adaptative, garantit qu'aucun mot ne déborde
+    const { lines, fontSize: fs } = fitTitle(name.toUpperCase());
+    const lh = fs * 1.25;
+    const totalH = lines.length * lh;
+    const ty = 210 - totalH / 2 + fs * 0.38;
     const nameEls = lines.map((l, i) =>
-      `<text x="250" y="${ty + i * lh}" text-anchor="middle" font-family="Arial Black,Impact,sans-serif" font-size="${fs}" font-weight="900" letter-spacing="2" fill="white">${esc(l)}</text>`
+      `<text x="250" y="${ty + i * lh}" text-anchor="middle" font-family="Impact,Arial Black,sans-serif" font-size="${fs}" font-weight="900" letter-spacing="1" fill="white">${esc(l)}</text>`
     ).join('');
 
     const sepY = ty + lines.length * lh + 14;
