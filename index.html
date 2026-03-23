@@ -616,6 +616,31 @@ body::after {
 
 .beat-card-inner { padding: 20px 20px 20px 26px; }
 
+/* Cover image */
+.beat-cover {
+  width: 100%;
+  height: 160px;
+  overflow: hidden;
+  position: relative;
+  flex-shrink: 0;
+}
+.beat-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s ease;
+}
+.beat-card:hover .beat-cover img { transform: scale(1.04); }
+.beat-cover::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 64px;
+  background: linear-gradient(to bottom, transparent, var(--card-bg));
+  pointer-events: none;
+}
+
 /* Waveform */
 .waveform {
   display: flex;
@@ -1937,6 +1962,9 @@ function renderBeatCard(beat, index) {
   }
 
   const waveformBars = Array.from({ length: 8 }, () => `<div class="waveform-bar"></div>`).join('');
+  const coverHTML = beat.cover_url
+    ? `<div class="beat-cover"><img src="${beat.cover_url}" alt="Cover ${beat.name}" loading="lazy"/></div>`
+    : '';
 
   return `
     <article class="beat-card${beat.is_featured ? ' featured-beat' : ''}"
@@ -1946,6 +1974,7 @@ function renderBeatCard(beat, index) {
              role="listitem"
              aria-label="Beat ${beat.name}">
       ${beat.is_featured ? '<div class="beat-featured-badge">Featured</div>' : ''}
+      ${coverHTML}
       <div class="beat-card-inner">
         <div class="waveform" aria-hidden="true">${waveformBars}</div>
         <span class="beat-status ${typeClass}">${typeLabel}</span>
